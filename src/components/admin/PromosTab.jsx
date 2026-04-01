@@ -6,7 +6,7 @@ export default function PromosTab({ promos, setPromos, promoForm, setPromoForm, 
 
   return (
     <div className="fade-up grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
-      <div>
+      <div className="order-2 lg:order-1">
         <h3 className="font-oswald text-xl font-bold text-text tracking-wider mb-4">
           ПРОМОКОДЫ{" "}
           <span className="text-sm text-muted font-normal tracking-normal">
@@ -66,7 +66,7 @@ export default function PromosTab({ promos, setPromos, promoForm, setPromoForm, 
       </div>
 
       <div
-        className="bg-bg-card border border-border rounded-xl p-6 sticky top-20"
+        className="bg-bg-card border border-border rounded-xl p-5 md:p-6 order-1 lg:order-2 lg:sticky lg:top-20"
       >
         <h3 className="font-oswald text-lg font-bold text-text tracking-wider mb-5">
           + НОВЫЙ ПРОМОКОД

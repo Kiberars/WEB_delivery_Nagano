@@ -67,7 +67,7 @@ export default function MenuTab({ menu, setMenu }) {
     <div className="fade-up">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
         {/* LEFT: list */}
-        <div>
+        <div className="order-2 lg:order-1">
           <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
             <h3 className="font-oswald text-xl font-bold text-text tracking-wider">
               ПОЗИЦИИ МЕНЮ{" "}
@@ -184,7 +184,7 @@ export default function MenuTab({ menu, setMenu }) {
 
         {/* RIGHT: form */}
         <div
-          className="bg-bg-card border border-border rounded-xl p-6 sticky top-20 transition-colors duration-300"
+          className="bg-bg-card border border-border rounded-xl p-5 md:p-6 order-1 lg:order-2 lg:sticky lg:top-20 transition-colors duration-300"
           style={{ borderColor: editId ? "#60A5FA" : "#252525" }}
         >
           <h3

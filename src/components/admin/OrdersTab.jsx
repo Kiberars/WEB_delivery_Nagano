@@ -167,14 +167,14 @@ export default function OrdersTab({
             <button
               key={s}
               onClick={() => setOrderFilter(s)}
-              className="btn-press px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold whitespace-nowrap cursor-pointer"
+              className="btn-press px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold whitespace-nowrap cursor-pointer shrink-0"
               style={{
                 background: orderFilter === s ? sm?.bg || "#1C1C1C" : "#1C1C1C",
                 color: orderFilter === s ? sm?.color || "#F0EDE8" : "#808080",
                 border: `1px solid ${orderFilter === s ? sm?.color || "#FF4500" : "#252525"}`,
               }}
             >
-              {s === "Все" ? "Все статусы" : sm?.label || s}
+              {s === "Все" ? "Все" : sm?.label || s}
             </button>
           );
         })}
@@ -220,14 +220,11 @@ export default function OrdersTab({
                 >
                   {sm?.label}
                 </div>
-                <div className="flex-1 min-w-[120px]">
-                  <div className="font-semibold text-sm text-text">{order.name}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-sm text-text truncate">{order.name}</div>
                   <div className="text-xs text-muted mt-0.5">{order.phone}</div>
                 </div>
-                <div className="flex-[2] min-w-[150px] text-sm text-muted overflow-hidden text-ellipsis whitespace-nowrap">
-                  📍 {order.address}
-                </div>
-                <div className="text-right shrink-0">
+                <div className="text-right shrink-0 ml-2">
                   <div className="font-oswald text-lg font-bold text-accent">
                     {order.total.toLocaleString("ru")} ₽
                   </div>
@@ -242,7 +239,8 @@ export default function OrdersTab({
               </div>
 
               {isOpen && (
-                <div className="slide-down border-t border-border px-5 py-5 bg-white/[0.015]">
+                <div className="slide-down border-t border-border px-4 md:px-5 py-4 bg-white/[0.015]">
+                  <div className="text-xs text-muted mb-2 truncate">📍 {order.address}</div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                       <div className="text-xs font-bold text-muted tracking-wider mb-3">

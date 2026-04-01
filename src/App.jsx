@@ -38,6 +38,7 @@ export default function App() {
   const [addedItem, setAddedItem] = useState(null);
   const [menu, setMenu] = useState(MENU_INIT);
   const [dateFilter, setDateFilter] = useState({ mode: "all", date: "", month: "" });
+  const [lastOrderTime, setLastOrderTime] = useState(0);
 
   useEffect(() => {
     const t = setInterval(() => setBannerIdx((i) => (i + 1) % BANNERS.length), 4500);
@@ -48,10 +49,10 @@ export default function App() {
   const cartSubtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
   const discount = appliedPromo
     ? appliedPromo.type === "percent"
-      ? Math.round(cartSubtotal * appliedPromo.value / 100)
+      ? Math.min(Math.round(cartSubtotal * appliedPromo.value / 100), cartSubtotal)
       : Math.min(appliedPromo.value, cartSubtotal)
     : 0;
-  const finalTotal = cartSubtotal - discount;
+  const finalTotal = Math.max(0, cartSubtotal - discount);
 
   const addToCart = (item) => {
     setCart((prev) => {
@@ -90,13 +91,17 @@ export default function App() {
   };
 
   const submitOrder = () => {
+    const now = Date.now();
+    if (now - lastOrderTime < 10000) {
+      setOrderErr("Подождите перед следующим заказом");
+      return;
+    }
     if (!orderForm.name.trim()) { setOrderErr("Введите ваше имя"); return; }
     if (!orderForm.phone.trim()) { setOrderErr("Введите номер телефона"); return; }
     if (orderForm.phone.replace(/\D/g, "").length < 11) { setOrderErr("Введите полный номер телефона (+7 XXX XXX-XX-XX)"); return; }
     if (!orderForm.address.trim()) { setOrderErr("Введите адрес доставки"); return; }
-    const now = new Date();
-    const timeStr = now.toLocaleString("ru", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "long" });
-    const dateStr = now.toISOString().slice(0, 10);
+    const timeStr = new Date().toLocaleString("ru", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "long" });
+    const dateStr = new Date().toISOString().slice(0, 10);
     const newOrder = {
       id: 1000 + Math.floor(Math.random() * 9000),
       ...orderForm,
@@ -108,6 +113,7 @@ export default function App() {
       date: dateStr,
     };
     setOrders((prev) => [newOrder, ...prev]);
+    setLastOrderTime(now);
     setCart([]);
     setAppliedPromo(null);
     setPromoInput("");
@@ -135,13 +141,16 @@ export default function App() {
 
   const addPromo = () => {
     if (!promoForm.code.trim() || !promoForm.value) return;
+    const val = Number(promoForm.value);
+    if (promoForm.type === "percent" && (val <= 0 || val > 100)) return;
+    if (promoForm.type === "fixed" && val <= 0) return;
     setPromos((prev) => [
       ...prev,
       {
         id: Date.now(),
         code: promoForm.code.toUpperCase(),
         type: promoForm.type,
-        value: Number(promoForm.value),
+        value: val,
         active: promoForm.active,
       },
     ]);
@@ -187,7 +196,7 @@ export default function App() {
     );
 
   return (
-    <div className="bg-bg min-h-screen relative">
+    <div className="bg-bg min-h-screen relative overflow-x-hidden">
       <Header cartCount={cartCount} setCartOpen={setCartOpen} setPage={setPage} />
       <BannerCarousel banners={BANNERS} idx={bannerIdx} setIdx={setBannerIdx} />
       <AboutSection />
@@ -201,7 +210,7 @@ export default function App() {
             <div className="w-[60px] h-[3px] bg-gradient-to-r from-accent to-gold mx-auto mt-3 rounded-sm" />
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-3 mb-8 scrollbar-none">
+          <div className="flex flex-wrap gap-2 mb-8">
             {CATS.map((c) => (
               <button
                 key={c}
